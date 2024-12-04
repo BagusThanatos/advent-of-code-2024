@@ -28,21 +28,21 @@ func main() {
 
   checkXMAS := func(i, j int) int64 {
     count := int64(0)
-    if j-1>=0 && j+1 < len(lines[i]) && i+1<len(lines) && i-1>=0 && lines[i][j] == 'A' && lines[i+1][j+1] == 'S' && lines[i-1][j-1] == 'M' && lines[i+1][j-1] == 'M' && lines[i-1][j+1] == 'S'{
+    if lines[i][j] == 'A' && lines[i+1][j+1] == 'S' && lines[i-1][j-1] == 'M' && lines[i+1][j-1] == 'M' && lines[i-1][j+1] == 'S'{
       count++
-    } else if j-1>=0 && j+1 < len(lines[i]) && i+1<len(lines) && i-1>=0 && lines[i][j] == 'A' && lines[i+1][j+1] == 'S' && lines[i-1][j-1] == 'M' && lines[i+1][j-1] == 'S' && lines[i-1][j+1] == 'M'{
+    } else if lines[i][j] == 'A' && lines[i+1][j+1] == 'S' && lines[i-1][j-1] == 'M' && lines[i+1][j-1] == 'S' && lines[i-1][j+1] == 'M'{
       count++
-    } else if j-1>=0 && j+1 < len(lines[i]) && i+1<len(lines) && i-1>=0 && lines[i][j] == 'A' && lines[i+1][j+1] == 'M' && lines[i-1][j-1] == 'S' && lines[i+1][j-1] == 'S' && lines[i-1][j+1] == 'M'{
+    } else if lines[i][j] == 'A' && lines[i+1][j+1] == 'M' && lines[i-1][j-1] == 'S' && lines[i+1][j-1] == 'S' && lines[i-1][j+1] == 'M'{
       count++
-    } else if j-1>=0 && j+1 < len(lines[i]) && i+1<len(lines) && i-1>=0 && lines[i][j] == 'A' && lines[i+1][j+1] == 'M' && lines[i-1][j-1] == 'S' && lines[i+1][j-1] == 'M' && lines[i-1][j+1] == 'S'{
+    } else if lines[i][j] == 'A' && lines[i+1][j+1] == 'M' && lines[i-1][j-1] == 'S' && lines[i+1][j-1] == 'M' && lines[i-1][j+1] == 'S'{
       count++
     }
 
     return count
   }
 
-  for i:=0;i<len(lines);i++ {
-    for j:=0;j<len(lines[i]); j++ {
+  for i:=1;i<len(lines)-1;i++ {
+    for j:=1;j<len(lines[i])-1; j++ {
       sum += checkXMAS(i, j)
     }
   }
