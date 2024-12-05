@@ -43,7 +43,6 @@ func main() {
   // choose pages
   checkValid := func (pages []string) bool {
     valid := true
-    // fmt.Println(i, lines[i])
     for j:=len(pages)-1;valid && j>=0;j--{
       page := pages[j]
       befores := rulesBefore[page]
@@ -65,8 +64,6 @@ func main() {
       fmt.Println(pages)
       for !checkValid(pages) {
         for j:=len(pages)-1;j>=0;j--{
-          // redoPage:
-          // fmt.Println(pages[j])
           page := pages[j]
           befores := rulesBefore[page]
           earliestPos := j
