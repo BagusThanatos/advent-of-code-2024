@@ -1,8 +1,7 @@
 package main
 
 /*
-NOTE: This is the correct answer
-The problem was to put an obstacle BEFORE the guard start patrolling
+NOTE: This was the wrong solution, put here just for references
 */
 
 import (
@@ -14,7 +13,7 @@ import (
 
 var lines [][]byte
 func main() {
-  file, err := os.Open("input.txt")
+  file, err := os.Open("input_self.txt")
   if err != nil {
     fmt.Println(err)
     return
@@ -45,20 +44,89 @@ func main() {
   // walk the thing
   fmt.Println(startX, startY, string(lines[startY][startX]))
   fmt.Println(len(lines), len(lines[0]))
+  mode := '^'
+  x := startX
+  y := startY
   SIZE := len(lines)
   walled := make([][]bool, SIZE)
   for i:=0;i<SIZE;i++{
     walled[i] = make([]bool, SIZE)
   }
 
-  x := 0
-  for x<len(lines[0])  {
-    y := 0
-    for y<len(lines) {
-      walled[y][x] = checkIfLoop(y, x, startX, startY, '^')
-      y++
+  lines[y][x] = 'X'
+  countX := 1
+
+  for x>=0 && y >=0 && x<len(lines[0]) && y<len(lines) {
+    // fmt.Println(y, x)
+    switch mode {
+    case '^':
+      if y-1>=0 {
+        walled[y-1][x] = walled[y-1][x] || checkIfLoop(y-1, x, x, y, '>')
+      }
+    case '>':
+      if x+1 < len(lines[0]) {
+        walled[y][x+1] = walled[y][x+1] || checkIfLoop(y, x+1, x, y, 'v')
+      }
+    case 'v':
+      if y+1 < len(lines) {
+        walled[y+1][x] = walled[y+1][x] || checkIfLoop(y+1, x, x, y, '<')
+      }
+    case '<':
+      // if y-1>=0 && lines[y-1][x] == 'X' {
+      //   count++ // we can put an obstacle on the left side
+      // }
+      if x-1 >=0 {
+        walled[y][x-1] = walled[y][x-1] || checkIfLoop(y, x-1, x, y, '^')
+      }
     }
-    x++
+    if lines[y][x] != 'X' {
+      lines[y][x] = 'X'
+      countX++
+    }
+    if mode == '^'{
+      if(y-1<0) {
+        break
+      }
+      if lines[y-1][x] == '#'{
+        mode = '>'
+        continue
+      }
+    } else if mode == '>'{
+      if x+1>=len(lines[0]){
+        break
+      }
+      if lines[y][x+1] == '#'{
+        mode = 'v'
+        continue
+      }
+    } else if mode == 'v'{
+      if y+1 >=len(lines) {
+        break
+      }
+      if lines[y+1][x] == '#'{
+        mode = '<'
+        continue
+      }
+    }else if mode == '<'{
+      if(x-1<0) {
+        break
+      }
+      if lines[y][x-1] == '#'{
+        mode = '^'
+        continue
+      }
+    }
+
+    switch mode {
+    case '^':
+      y--
+    case '>':
+      x++
+    case 'v':
+      y++
+    case '<':
+      x--
+    }
   }
   count := 0
   walled[startY][startX] = false
@@ -72,10 +140,14 @@ func main() {
       }
     }
   }
+  fmt.Println(countX)
   fmt.Println(count)
 }
 
 func checkIfLoop(wallY, wallX, sx, sy int, mode rune) bool {
+    // if wallX<0 || wallY<0 || wallX >= len(lines[0]) || wallY >= len(lines) {
+    //   return false
+    // }
     if lines[wallY][wallX] == '#' {
       return false
     }
