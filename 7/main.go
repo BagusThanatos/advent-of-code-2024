@@ -1,10 +1,5 @@
 package main
 
-/*
-NOTE: This is the correct answer
-The problem was to put an obstacle BEFORE the guard start patrolling
-*/
-
 import (
   "os"
   "fmt"
@@ -42,7 +37,6 @@ func main() {
     }
     lines[i] = tempNums
   }
-  // fmt.Println(lines)
 
   sum := int64(0)
   for i:=0;i<len(lines);i++{
