@@ -22,7 +22,7 @@ func main() {
   lines := strings.Split(string(bytes), "\n")
   input := lines[0]
 
-  harddisk := make([]int64, 1024*1024) // 1MB of harddisk
+  harddisk := make([]int64, 1024*1024) // 1KB of harddisk
 
   EMPTYBLOCK := int64(-1)
   currentFileID := int64(0)

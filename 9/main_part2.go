@@ -22,11 +22,11 @@ func main() {
   lines := strings.Split(string(bytes), "\n")
   input := lines[0]
 
-  harddisk := make([]int64, 1024*1024) // 1MB of harddisk
+  harddisk := make([]int64, 1024*1024) // 1KB of harddisk
 
   EMPTYBLOCK := int64(-1)
   currentFileID := int64(0)
-  currentHDIndex := int64(0)
+  currentHDIndex := 0
 
   // generate block rules first
   fmt.Println("generate block rules")
@@ -37,21 +37,22 @@ func main() {
       set = currentFileID
       currentFileID++
     }
-    until := currentHDIndex + value
+    until := currentHDIndex + int(value)
     for currentHDIndex < until {
       harddisk[currentHDIndex] = set
       currentHDIndex++
     }
   }
+  fmt.Println(harddisk[:100])
   fmt.Println("move blocks")
-  for ;int64(emptyBlockLoc)<currentHDIndex && harddisk[emptyBlockLoc] != EMPTYBLOCK ; emptyBlockLoc++ {}
   fmt.Println(currentHDIndex, harddisk[currentHDIndex])
   currentHDIndex--
-  currentFile := harddisk[currentHDIndex]
-  for currentHDIndex >=0 && int64(emptyBlockLoc) < currentHDIndex{
+  for currentHDIndex >=0{
     // determine file length
+    // fmt.Println("determine file length")
     length := 0
-    for harddisk[currentHDIndex] == currentFile{
+    currentFile := harddisk[currentHDIndex]
+    for currentHDIndex >= 0 && harddisk[currentHDIndex] == currentFile{
       currentHDIndex--
       length++
     }
@@ -66,20 +67,49 @@ func main() {
       }
       emptyBlockLoc++
     }
+    // fmt.Println(currentFile, length, currentHDIndex, currentEmptyBlockLength, emptyBlockLoc, currentEmptyBlockLength == length)
 
     // move blocks
     if currentEmptyBlockLength == length {
-      for i:=0;i<length;i++{
+      // fmt.Println("move blocks for ", currentFile)
+      for i:=1;i<=length;i++{
         harddisk[emptyBlockLoc-i] = harddisk[currentHDIndex+i]
         harddisk[currentHDIndex+i] = EMPTYBLOCK
       }
+      // fmt.Println(harddisk[:50])
     }
+    for ;currentHDIndex>=0 && harddisk[currentHDIndex] == EMPTYBLOCK; currentHDIndex--{}
   }
 
   sum := int64(0)
-  for i := 0;i<len(harddisk)&&harddisk[i] != EMPTYBLOCK; i++{
-    sum += int64(i) * harddisk[i]
+  for i := 0;i<len(harddisk); i++{
+    if harddisk[i] > 0 {
+      sum += (int64(i) * harddisk[i])
+    }
   }
+  // try to validate result
+  // valid := map[int64][]int{}
+  // curr := harddisk[0]
+  // valid[curr] = []int{0}
+  // for i := 1;i<len(harddisk); i++{
+  //   if harddisk[i] > 0 && harddisk[i] != curr {
+  //     if v, ok := valid[curr]; ok {
+  //       valid[curr] = append(v, i)
+  //     } else {
+  //       valid[curr] = []int{i}
+  //     }
+  //     curr = harddisk[i]
+  //   }
+    // if harddisk[i] == 0 {
+    //   fmt.Println(i)
+    // }
+  // }
+  // for k, v := range valid {
+  //   if len(v) > 1 {
+  //     fmt.Println("occur twice: ", k, v)
+  //   }
+  // }
+  // fmt.Println(valid)
   fmt.Println(harddisk[:100])
   fmt.Println(sum)
 }
