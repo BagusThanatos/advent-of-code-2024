@@ -8,6 +8,9 @@ import (
   "strconv"
 )
 
+// NOTE: This is the way to go. Use map to reduce the amount of compute AND memory used
+//       The problem has this note `it always retains order`, which in this case actually means `the order does not matter at all as long as you can count`
+
 var lines []string
 func main() {
   file, err := os.Open("input.txt")
@@ -22,67 +25,53 @@ func main() {
   }
   lines = strings.Split(string(bytes), "\n")
   split := strings.Split(lines[0], " ")
-
-  temp, _ := strconv.ParseInt(split[0], 10, 64)
-  start := &node{temp, nil}
-  current := start
-  for i:=1;i<len(split);i++{
-  fmt.Println(i, current)
-    temp, _ = strconv.ParseInt(split[i], 10, 64)
-    next := &node{temp, nil}
-    current.next = next
-    current = next
+  line := make([]int64, len(split))
+  for i:=0;i<len(split);i++{
+    temp, _ := strconv.ParseInt(split[i], 10, 64)
+    line[i] = int64(temp)
+  }
+  m := make(map[int64]int64)
+  for index := 0;index<len(line);index++{
+    m[line[index]] = 1
   }
 
-  count := len(split)
-  fmt.Println("")
-
-
-  for i:=0;i<75;i++{
-    fmt.Println(i, count)
-    current = start
-    for current != nil {
-      val := current.val
-      converted := strconv.FormatInt(val, 10)
+  fmt.Println(m)
+  for i:=0;i<25;i++ {
+    newMap := make(map[int64]int64)
+    for val := range m {
       if val == 0 {
-        current.val = 1
-      } else if len(converted) & 1 == 0 {
-        firstNum, _ := strconv.ParseInt(converted[:len(converted)/2], 10, 64)
-        secondNum, _ := strconv.ParseInt(converted[len(converted)/2:], 10, 64)
-        // fmt.Println(converted, firstNum, secondNum)
-        new := &node{secondNum, nil}
-        current.val = firstNum
-        next := current.next
-        if next == nil {
-          current.next = new
-          current = new
-        } else {
-          new.next = next
-          current.next = new
-          current = new
-        }
-        count++
+        newMap[1] =  newMap[1] + m[val]
+      } else if converted := getMultiplesOfTen(val); converted >0 {
+        firstNum := val/converted
+        secondNum := val - (firstNum*converted)
+        newMap[firstNum] = newMap[firstNum] + m[val]
+        newMap[secondNum] = newMap[secondNum] + m[val]
       } else {
-        current.val = val*2024
+        newMap[val * 2024] += m[val]
       }
-      current = current.next
     }
+    m = newMap
   }
-  //  current = start
-  // for current != nil {
-  //   fmt.Print(current.val, " ")
-  //   current = current.next
-  // }
-
-  // current = start
-  // for current != nil{
-  //   count++
-  //   current = current.next
-  // }
+  count := int64(0)
+  for _, v := range m{
+    count+= v
+  }
   fmt.Println(count)
 }
 
-type node struct {
-  val int64
-  next *node
+func getMultiplesOfTen(val int64) int64{
+  result := int64(0)
+  for val > 0 {
+    result++
+    val /= 10
+  }
+  if result & 1 != 0 {
+    return 0
+  }
+  temp := int64(1)
+  for result>1{
+    temp *=10
+    result -= 2
+  }
+  return temp
 }

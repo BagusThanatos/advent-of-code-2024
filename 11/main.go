@@ -27,7 +27,7 @@ func main() {
     temp, _ := strconv.ParseInt(split[i], 10, 64)
     line[i] = int64(temp)
   }
-  for i:=0;i<25;i++{
+  for i:=0;i<30;i++{
     newLine := make([]int64, 0)
     for index := 0;index<len(line);index++{
       val := line[index]
@@ -47,6 +47,15 @@ func main() {
     line = newLine
   }
 
-
+  // m := make(map[int64]int64)
+  // for _, v:=range line {
+  //   if v, ok := m[v]; ok {
+  //     m[v]+=1
+  //   } else {
+  //     m[v]=1
+  //   }
+  // }
+  // fmt.Println(m)
+  // fmt.Println(len(m))
   fmt.Println(len(line))
 }

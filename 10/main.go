@@ -46,7 +46,6 @@ func trail(i, j int, prev byte) map[coordinate]struct{} {
     return nil
   }
   if lines[i][j] == '9' {
-  fmt.Println(string(lines[i][j]))
     return map[coordinate]struct{}{coordinate{i,j}: {}}
   }
   adjacents := []map[coordinate]struct{}{trail(i+1, j, lines[i][j]), trail(i, j+1, lines[i][j]), trail(i-1, j, lines[i][j]),  trail(i, j-1, lines[i][j])}

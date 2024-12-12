@@ -28,7 +28,20 @@ func main() {
   var wg sync.WaitGroup
   result := make([]int64, len(split))
 
-  for i:=0;i<len(split);i++{
+  for i:=0;i<len(split)/2;i++{
+    fmt.Println(i)
+    wg.Add(1)
+    go func (index int) {
+      defer wg.Done()
+      temp, _ := strconv.ParseInt(split[index], 10, 64)
+      result[index] = recursive(int64(temp), 0)
+      fmt.Println(result[index])
+    }(i)
+  }
+
+  wg.Wait()
+
+  for i:=len(split)/2;i<len(split);i++{
     fmt.Println(i)
     wg.Add(1)
     go func (index int) {
