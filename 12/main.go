@@ -32,9 +32,6 @@ func main() {
   for i:=0;i<len(lines);i++{
     for j:=0;j<len(lines[i]);j++{
       area, perimeter := recursive(i,j,lines[i][j])
-      if perimeter>0 {
-        fmt.Println(string(lines[i][j]), i, j, area, perimeter)
-      }
       sum += (area* perimeter)
     }
   }
