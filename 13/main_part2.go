@@ -23,7 +23,18 @@ CXa + DXb = X
 CYa + DYb = Y
 
 e.g
+first equation
+11a + 17b = 2413
+second equation
+67a + 16b = 6293
 
+multiply first equation with 16
+176a + 272b = 38608
+multiply second equation with 17
+1139a+ 272b = 106981
+
+substraction
+963a = 68373
 */
 func main() {
   file, err := os.Open("input.txt")
