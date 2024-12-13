@@ -17,7 +17,7 @@ var (
   MAXPRESSED = 100
 )
 func main() {
-  file, err := os.Open("input_coba.txt")
+  file, err := os.Open("input.txt")
   if err != nil {
     fmt.Println(err)
     return
@@ -37,13 +37,13 @@ func main() {
     deltaXA, deltaYA := parseButton(butA)
     deltaXB, deltaYB := parseButton(butB)
     prizeX, prizeY := parseButton(prize)
-    // cost := recursive(0, 0, 0, prizeX, prizeY, deltaXA, deltaYA, deltaXB, deltaYB)
     cost := math.MaxInt
     for a:=1;a<=MAXPRESSED;a++{
       for b:=1;b<=MAXPRESSED;b++{
         if a*deltaXA + b*deltaXB == prizeX && a*deltaYA + b*deltaYB == prizeY {
           tempCost := COSTA*a + COSTB * b
           if tempCost < cost {
+            fmt.Println(a, b)
             cost = tempCost
           }
         }
@@ -63,8 +63,3 @@ func parseButton(s string) (int, int) {
   deltaY, _ := strconv.ParseInt(parsed[1][3:], 10, 32)
   return int(deltaX), int(deltaY)
 }
-/*
-CXa + DXb = X
-CYa + DYb = Y
-min(3*C + D)
-*/
