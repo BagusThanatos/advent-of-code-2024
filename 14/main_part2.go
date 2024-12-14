@@ -9,6 +9,7 @@ import (
   "strconv"
 )
 
+// Answer is: 8053, Found through actually looking into the printed results lol
 var lines []string
 var (
   PERIOD = int64(100)
@@ -36,42 +37,38 @@ func main() {
   }
   lines = strings.Split(string(bytes), "\n")
   lines = lines[:len(lines)-1]
-  quadrants := [][]int64{[]int64{0, 0}, []int64{0, 0}}
-  // data := make([][]int, MAXY)
-  // for i:=0;i<int(MAXY);i++{
-  //   data[i] = make([]int, MAXX)
-  // }
-  for i := 0;i<len(lines);i++{
-    posX, posY, vX, vY := parseRobot(lines[i])
-    finalX := (posX + (PERIOD * vX)) % MAXX
-    finalY := (posY + (PERIOD * vY)) % MAXY
-    if finalX < 0 {
-      finalX = MAXX + finalX
-    }
-    if finalY < 0 {
-      finalY = MAXY + finalY
-    }
-    // fmt.Println(posX, posY, vX, vY)
-    // fmt.Println(finalX, finalY, posX + (PERIOD * vX), )
-    if finalX == QUADRANTX || finalY == QUADRANTY {
-      continue
-    }
-    // data[int(finalY)][int(finalX)] += 1
-    quadrants[finalX/(QUADRANTX+1)][finalY/(QUADRANTY+1)] += 1
-    // fmt.Println(quadrants)
+  data := make([][]int, MAXY)
+  for i:=0;i<int(MAXY);i++{
+    data[i] = make([]int, MAXX)
   }
-  sum := int64(1)
-  for _, v := range quadrants {
-    for _, x := range v {
-      sum *= x
-    }
-  }
-  // fmt.Println(quadrants)
-  // for _, v := range data {
-  //   fmt.Println(v)
-  // }
-  fmt.Println(sum)
+  // 2999 is too low
+  elapsed := int64(3000)
 
+  for elapsed < 10000 {
+    for i := 0;i<len(lines);i++{
+      posX, posY, vX, vY := parseRobot(lines[i])
+      finalX := (posX + (elapsed * vX)) % MAXX
+      finalY := (posY + (elapsed * vY)) % MAXY
+      if finalX < 0 {
+        finalX = MAXX + finalX
+      }
+      if finalY < 0 {
+        finalY = MAXY + finalY
+      }
+      data[finalY][finalX] = 7
+    }
+    fmt.Println(elapsed)
+    for _, v:= range data {
+      for _, x := range v {
+        fmt.Print(x)
+      }
+      fmt.Println()
+    }
+    for i:=0;i<int(MAXY);i++{
+      data[i] = make([]int, MAXX)
+    }
+    elapsed++
+  }
 }
 func parseRobot(s string) (int64, int64, int64, int64) {
   parsed := strings.Split(s, " ")
@@ -82,10 +79,4 @@ func parseRobot(s string) (int64, int64, int64, int64) {
   vX, _ := strconv.ParseInt(v[0], 10, 64)
   vY, _ := strconv.ParseInt(v[1], 10, 64)
   return posX, posY, vX, vY
-}
-func abs(i int64) int64{
-  if i<0{
-    return -i
-  }
-  return i
 }
