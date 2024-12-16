@@ -7,7 +7,6 @@ import (
   "strings"
 )
 
-// Funny story: I stumbled into the solution for the second part first lmao
 var lines []string
 func main() {
   file, err := os.Open("input.txt")

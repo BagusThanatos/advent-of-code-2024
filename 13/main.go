@@ -9,7 +9,6 @@ import (
   "strconv"
 )
 
-// Funny story: I stumbled into the solution for the second part first lmao
 var lines []string
 var (
   COSTA = 3
