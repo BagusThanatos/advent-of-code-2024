@@ -11,7 +11,7 @@ import (
 var lines []string
 var data [][]int64
 func main() {
-  file, err := os.Open("input_coba.txt")
+  file, err := os.Open("input.txt")
   if err != nil {
     fmt.Println(err)
     return
@@ -44,11 +44,30 @@ func main() {
     }
   }
   found:
-  recursive(RIGHT, y, x, 0)
+  // The idea is to find one best path first, and then look for all possible best path using the score as threshold
+  recursiveFindFirst(RIGHT, y, x, 0)
   fmt.Println(string(lines[1][len(lines[1])-2]), data[1][len(lines[1])-2])
-  // for _, v:= range data {
-  //   fmt.Println(v)
-  // }
+  recursiveFindAll(RIGHT, y, x, 0, []node{node{y, x}}, data[1][len(lines[1])-2])
+
+  result := make(map[node]struct{})
+  for i, v:= range data {
+    fmt.Println(v)
+    for j:=0;j<len(v);j++{
+      if lines[i][j] == '#' {
+        v[j] =2
+      } else {
+        v[j] = 0
+      }
+    }
+  }
+  for _, v := range bestList {
+    result[v] = struct{}{}
+    data[v.y][v.x] = 1 // let's mark it
+  }
+  for _, v:= range data {
+    fmt.Println(v)
+  }
+  fmt.Println(len(result)+1)  // + 1 for the E node
 
 }
 var (
@@ -57,7 +76,11 @@ var (
   LEFT = 2
   RIGHT = 3
 )
-func recursive(mode, y, x int, current int64) {
+type node struct{
+  y, x int
+}
+var bestList []node
+func recursiveFindFirst(mode, y, x int, current int64) {
   if y<0 || x<0 || y>=len(lines) || x>=len(lines[y]) || lines[y][x] == '#' || data[y][x] < current {
     return
   }
@@ -68,23 +91,53 @@ func recursive(mode, y, x int, current int64) {
     return
   }
   if mode == UP {
-    recursive(mode, y-1, x, current + 1)
-    recursive(RIGHT, y, x+1, 1001 + current)
-    recursive(LEFT, y, x-1, 1001+ current)
+    recursiveFindFirst(mode, y-1, x, current + 1)
+    recursiveFindFirst(RIGHT, y, x+1, 1001 + current)
+    recursiveFindFirst(LEFT, y, x-1, 1001+ current)
   }
   if mode == DOWN {
-    recursive(mode, y+1, x, current + 1)
-    recursive(RIGHT, y, x+1, 1001 + current)
-    recursive(LEFT, y, x-1, 1001+ current)
+    recursiveFindFirst(mode, y+1, x, current + 1)
+    recursiveFindFirst(RIGHT, y, x+1, 1001 + current)
+    recursiveFindFirst(LEFT, y, x-1, 1001+ current)
   }
   if mode == LEFT {
-    recursive(mode, y, x-1, current + 1)
-    recursive(UP, y-1, x, 1001 + current)
-    recursive(DOWN, y+1, x, 1001+ current)
+    recursiveFindFirst(mode, y, x-1, current + 1)
+    recursiveFindFirst(UP, y-1, x, 1001 + current)
+    recursiveFindFirst(DOWN, y+1, x, 1001+ current)
   }
   if mode == RIGHT {
-    recursive(mode, y, x+1, current + 1)
-    recursive(UP, y-1, x, 1001 + current)
-    recursive(DOWN, y+1, x, 1001+ current)
+    recursiveFindFirst(mode, y, x+1, current + 1)
+    recursiveFindFirst(UP, y-1, x, 1001 + current)
+    recursiveFindFirst(DOWN, y+1, x, 1001+ current)
+  }
+}
+func recursiveFindAll(mode, y, x int, current int64, list []node, max int64) {
+  if y<0 || x<0 || y>=len(lines) || x>=len(lines[y]) || lines[y][x] == '#' || current > max {
+    return
+  }
+  if current == data[y][x] && lines[y][x] == 'E' {
+    bestList = append(bestList, list...)
+    return
+  }
+  list = append(list, node{y, x})
+  if mode == UP {
+    recursiveFindAll(mode, y-1, x, current + 1, list, max)
+    recursiveFindAll(RIGHT, y, x+1, 1001 + current, list, max)
+    recursiveFindAll(LEFT, y, x-1, 1001+ current, list, max)
+  }
+  if mode == DOWN {
+    recursiveFindAll(mode, y+1, x, current + 1, list, max)
+    recursiveFindAll(RIGHT, y, x+1, 1001 + current, list, max)
+    recursiveFindAll(LEFT, y, x-1, 1001+ current, list, max)
+  }
+  if mode == LEFT {
+    recursiveFindAll(mode, y, x-1, current + 1, list, max)
+    recursiveFindAll(UP, y-1, x, 1001 + current, list, max)
+    recursiveFindAll(DOWN, y+1, x, 1001+ current, list, max)
+  }
+  if mode == RIGHT {
+    recursiveFindAll(mode, y, x+1, current + 1, list, max)
+    recursiveFindAll(UP, y-1, x, 1001 + current, list, max)
+    recursiveFindAll(DOWN, y+1, x, 1001+ current, list, max)
   }
 }

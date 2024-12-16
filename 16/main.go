@@ -45,6 +45,8 @@ func main() {
   }
   found:
   recursive(RIGHT, y, x, 0)
+
+  // Now we just need to print value in the location of 'E'
   fmt.Println(string(lines[1][len(lines[1])-2]), data[1][len(lines[1])-2])
   // for _, v:= range data {
   //   fmt.Println(v)
