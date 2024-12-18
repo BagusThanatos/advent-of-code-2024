@@ -55,6 +55,7 @@ func main() {
   jnz registerA < 0
   */
   // Note that register A is always divided by * at the end, hence we can simplify how we look for the starting point below
+  // As the final value of register is expected to be 0 for the JNZ opcode, we can start from there
   startA := int64(0)
   output := make([]byte, 0)
   MAXOUTPUT := len(program)-1
