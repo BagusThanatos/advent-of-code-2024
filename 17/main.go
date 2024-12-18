@@ -31,7 +31,8 @@ func main() {
   lines = strings.Split(string(bytes), "\n")
   lines = lines[:len(lines)-1]
 
-  registerA, _ = strconv.ParseInt(strings.Split(lines[0], ":")[1][1:], 10, 64)
+  // registerA, _ = strconv.ParseInt(strings.Split(lines[0], ":")[1][1:], 10, 64)
+  registerA = int64(7)
   registerB, _ = strconv.ParseInt(strings.Split(lines[1], ":")[1][1:], 10, 64)
   registerC, _ = strconv.ParseInt(strings.Split(lines[2], ":")[1][1:], 10, 64)
   fmt.Println(registerA, registerB, registerC)
