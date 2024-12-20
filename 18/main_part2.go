@@ -76,10 +76,6 @@ func main() {
     fmt.Println(v)
   }
   fmt.Println(wallCount, lines[wallCount-2], data[SizeY-1][SizeX-1])
-  // fmt.Println(result)
-  // for _, v:= range data {
-  //   fmt.Println(v)
-  // }
 
 }
 var (
