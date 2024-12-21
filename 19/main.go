@@ -37,8 +37,7 @@ func main() {
       }
     }
   }
-  // fmt.Println(stripes)
-  // build node
+  // build tree
   start := &node{0, map[byte]*node{}}
   for _, stripe := range stripes {
     // only add to tree if it cant be build by existing tree
@@ -61,7 +60,6 @@ func main() {
   count := int64(0)
   for i:=2;i<len(lines);i++{
     result := recursiveNode(lines[i], 0, start)
-    // result := recursive(lines[i], 0)
     fmt.Println(lines[i], result)
     if result {
       count++
@@ -76,9 +74,6 @@ var (
   RIGHT = 3
 )
 
-/*
- Note: The idea is to "
- */
 
 type node struct{
   c byte
@@ -86,16 +81,10 @@ type node struct{
 }
 var bestList []node
 func recursiveNode(towel string, index int, currentNode *node) bool {
-  // fmt.Println(towel, index, currentNode)
   if currentNode == nil {
-    // fmt.Println("NULL NODE", towel, index)
     return false
   }
   if index >= len(towel) {
-    // fmt.Println(towel, index, towel[index], string(towel[index]), string(currentNode.c), currentNode)
-    // fmt.Println(towel, len(towel), index,  string(currentNode.c), currentNode)
-    // return currentNode.next[0] != nil && (currentNode.c == towel[index] || currentNode.c == 0)
-    // return currentNode.next[0] != nil || currentNode.c == 0//&& (currentNode.c == towel[index] || currentNode.c == 0)
     return currentNode.next[0] != nil
   }
   next := currentNode.next[towel[index]]
