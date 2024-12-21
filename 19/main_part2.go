@@ -11,8 +11,8 @@ import (
 var lines []string
 var stripes []string
 func main() {
-  // file, err := os.Open("input.txt")
   file, err := os.Open("input.txt")
+  // file, err := os.Open("input_coba.txt")
   if err != nil {
     fmt.Println(err)
     return
@@ -39,10 +39,10 @@ func main() {
   }
   // fmt.Println(stripes)
   // build node
-  start := &node{0, map[byte]*node{}}
+  start := &node{"", map[byte]*node{}}
   for _, stripe := range stripes {
     // only add to tree if it cant be build by existing tree
-    if recursiveNode(stripe, 0, start) {
+    if ok, _ := recursiveNode(stripe, 0, start, "", []string{}); ok{
       // fmt.Println("skipped", stripe)
       continue
     }
@@ -51,19 +51,21 @@ func main() {
     for i := range stripe {
       c := stripe[i]
       if current.next[c] == nil {
-        current.next[c] = &node{c, map[byte]*node{}}
+        current.next[c] = &node{"", map[byte]*node{}}
       }
       current = current.next[c]
     }
     current.next[0] = start
+    fmt.Println(current.stripe, stripe)
+    current.stripe = stripe
   }
   delete(start.next, 0)
 
   count := int64(0)
   for i:=2;i<len(lines);i++{
-    result := recursiveNode(lines[i], 0, start)
+    result, m := recursiveNode(lines[i], 0, start, "", []string{})
     // result := recursive(lines[i], 0)
-    // fmt.Println(lines[i], result)
+    fmt.Println(lines[i], result, m)
     if result {
       count++
     }
@@ -82,28 +84,32 @@ var (
  */
 
 type node struct{
-  c byte
+  stripe string
   next map[byte]*node
 }
 var bestList []node
-func recursiveNode(towel string, index int, currentNode *node) bool {
+func recursiveNode(towel string, index int, currentNode *node, currentStripe string, list []string) (bool, []string) {
   // fmt.Println(towel, index, currentNode)
   if currentNode == nil {
     // fmt.Println("NULL NODE", towel, index)
-    return false
+    return false, []string{}
   }
   if index >= len(towel) {
     // fmt.Println(towel, index, towel[index], string(towel[index]), string(currentNode.c), currentNode)
     // fmt.Println(towel, len(towel), index,  string(currentNode.c), currentNode)
     // return currentNode.next[0] != nil && (currentNode.c == towel[index] || currentNode.c == 0)
     // return currentNode.next[0] != nil || currentNode.c == 0//&& (currentNode.c == towel[index] || currentNode.c == 0)
-    return currentNode.next[0] != nil
+    return currentNode.next[0] != nil, append(list, currentStripe)
   }
   next := currentNode.next[towel[index]]
-  result := recursiveNode(towel, index+1, next)
+  result, m := recursiveNode(towel, index+1, next, currentStripe+string(towel[index]), list)
   next = currentNode.next[0]
   if next != nil {
-    result = result || recursiveNode(towel, index+1, next.next[towel[index]])
+    tempResult, tempM := recursiveNode(towel, index+1, next.next[towel[index]], string(towel[index]), append(list, currentStripe))
+    if !result {
+      m = tempM
+    }
+    result = result || tempResult
   }
-  return result
+  return result, m
 }
