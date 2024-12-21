@@ -30,7 +30,7 @@ func main() {
   //sort by length from shorter
   for i:=0;i<len(stripes);i++{
     for ii:=i+1;ii<len(stripes);ii++{
-      if len(stripes[i]) > len(stripes[ii]) {
+      if len(stripes[i]) >len(stripes[ii]) {
         temp := stripes[i]
         stripes[i] = stripes[ii]
         stripes[ii] = temp
@@ -43,9 +43,10 @@ func main() {
   for _, stripe := range stripes {
     // only add to tree if it cant be build by existing tree
     if recursiveNode(stripe, 0, start) {
-      fmt.Println("skipped", stripe)
+      // fmt.Println("skipped", stripe)
       continue
     }
+    fmt.Println("added to tree:", stripe)
     current := start
     for i := range stripe {
       c := stripe[i]
@@ -62,7 +63,7 @@ func main() {
   for i:=2;i<len(lines);i++{
     result := recursiveNode(lines[i], 0, start)
     // result := recursive(lines[i], 0)
-    fmt.Println(lines[i], result)
+    // fmt.Println(lines[i], result)
     if result {
       count++
     }
