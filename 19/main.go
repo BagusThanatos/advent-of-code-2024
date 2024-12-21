@@ -26,19 +26,26 @@ func main() {
   lines = lines[:len(lines)-1]
 
   stripes = strings.Split(lines[0], ", ")
-  //sort by length
-  // for i:=0;i<len(stripes);i++{
-  //   for ii:=1;ii<len(stripes);ii++{
-  //     if len(stripes[i]) < len(stripes[ii]) {
-  //       temp := stripes[i]
-  //       stripes[i] = stripes[ii]
-  //       stripes[ii] = temp
-  //     }
-  //   }
-  // }
+  // NOTE: the idea here is to reduce the number of possible stripes so the problem has much smaller space
+  //sort by length from shorter
+  for i:=0;i<len(stripes);i++{
+    for ii:=1;ii<len(stripes);ii++{
+      if len(stripes[i]) < len(stripes[ii]) {
+        temp := stripes[i]
+        stripes[i] = stripes[ii]
+        stripes[ii] = temp
+      }
+    }
+  }
+  // fmt.Println(stripes)
   // build node
   start := &node{0, map[byte]*node{}}
   for _, stripe := range stripes {
+    // only add to tree if it cant be build by existing tree
+    if recursiveNode(stripe, 0, start) {
+      fmt.Println("skipped", stripe)
+      continue
+    }
     current := start
     for i := range stripe {
       c := stripe[i]
@@ -54,6 +61,7 @@ func main() {
   count := int64(0)
   for i:=2;i<len(lines);i++{
     result := recursiveNode(lines[i], 0, start)
+    // result := recursive(lines[i], 0)
     fmt.Println(lines[i], result)
     if result {
       count++
@@ -78,6 +86,7 @@ type node struct{
 }
 var bestList []node
 func recursiveNode(towel string, index int, currentNode *node) bool {
+  // fmt.Println(towel, index, currentNode)
   if currentNode == nil {
     // fmt.Println("NULL NODE", towel, index)
     return false
