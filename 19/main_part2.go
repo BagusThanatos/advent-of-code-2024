@@ -96,20 +96,30 @@ func recursiveNode(towel string, index int, currentNode *node, currentStripe str
   }
   if index >= len(towel) {
     // fmt.Println(towel, index, towel[index], string(towel[index]), string(currentNode.c), currentNode)
-    // fmt.Println(towel, len(towel), index,  string(currentNode.c), currentNode)
     // return currentNode.next[0] != nil && (currentNode.c == towel[index] || currentNode.c == 0)
     // return currentNode.next[0] != nil || currentNode.c == 0//&& (currentNode.c == towel[index] || currentNode.c == 0)
-    return currentNode.next[0] != nil, append(list, currentStripe)
+    if(currentStripe == "wr") {
+    }
+    if currentNode.next[0] == nil {
+      return false, []string{}
+    }
+      // fmt.Println(towel, len(towel), index,  string(currentNode.stripe), currentNode, append(list, currentStripe))
+    return true, append(list, currentStripe)
   }
   next := currentNode.next[towel[index]]
   result, m := recursiveNode(towel, index+1, next, currentStripe+string(towel[index]), list)
+  if result {
+    return result, m
+  }
   next = currentNode.next[0]
   if next != nil {
     tempResult, tempM := recursiveNode(towel, index+1, next.next[towel[index]], string(towel[index]), append(list, currentStripe))
-    if !result {
-      m = tempM
-    }
-    result = result || tempResult
+    // if !result {
+      // fmt.Println("HERE", tempResult, tempM, m)
+      // m = tempM
+    // }
+    // result = result || tempResult
+    return tempResult, tempM
   }
-  return result, m
+  return false, []string{}
 }
