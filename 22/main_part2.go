@@ -43,19 +43,28 @@ func main() {
       secret = (secret ^ (secret * 64)) % 16777216
       secret = (secret ^ (secret / 32)) % 16777216
       secret = (secret ^ (secret * 2048)) % 16777216
-      changes[index][i] = (secret % 10) - prevBananas
+      changes[index][i] = (secret % 10) - prevBananas + 9 // convert range from [-9, 9] to [0, 18]
       bananas[index][i] = secret % 10
     }
   }
   maxBananas := int64(0)
-  mark := make(map[changeNode]struct{})
+  mark := make([][][][]bool, 20)
+  for i:=0;i<len(mark);i++{
+    mark[i] = make([][][]bool, 20)
+    for j:=0;j<len(mark[i]);j++{
+      mark[i][j] = make([][]bool, 20)
+      for k:=0;k<len(mark[i][j]);k++{
+        mark[i][j][k] = make([]bool, 20)
+      }
+    }
+  }
   for baseRow := 0;baseRow<len(changes)-1;baseRow++{
     for i:=3;i<len(changes[baseRow]);i++{
       c := changes[baseRow][i-3:i+1]
-      if _, ok := mark[changeNode{c[0], c[1], c[2], c[3]}]; ok{
+      if mark[c[0]][c[1]][c[2]][c[3]] {
         continue
       }
-      mark[changeNode{c[0], c[1], c[2], c[3]}] = struct{}{}
+      mark[c[0]][c[1]][c[2]][c[3]]= true
       tempBananas := bananas[baseRow][i]
       // tempBananas := int64(0)
 
@@ -78,9 +87,6 @@ func main() {
     }
   }
   fmt.Println(maxBananas)
-}
-type changeNode struct{
-  a,b,c,d int64
 }
 func sliceEqual(a, b []int64) bool {
   return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3]
