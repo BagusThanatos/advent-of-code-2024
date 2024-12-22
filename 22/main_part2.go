@@ -56,11 +56,11 @@ func main() {
         continue
       }
       mark[changeNode{c[0], c[1], c[2], c[3]}] = struct{}{}
-      // tempBananas := bananas[baseRow][i]
-      tempBananas := int64(0)
+      tempBananas := bananas[baseRow][i]
+      // tempBananas := int64(0)
 
       // there's no need to check previous rows as it should've been found previously
-      for m := baseRow;m<len(changes);m++{
+      for m := baseRow+1;m<len(changes);m++{
         // if m == baseRow {
         //   continue
         // }
@@ -83,14 +83,5 @@ type changeNode struct{
   a,b,c,d int64
 }
 func sliceEqual(a, b []int64) bool {
-  if len(a) != len(b) {
-    return false
-  }
-  for i:=0;i<len(a);i++ {
-    if a[i]!=b[i] {
-      return false
-    }
-  }
-  // fmt.Println(a, b)
-  return true
+  return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3]
 }
