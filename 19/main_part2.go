@@ -5,11 +5,11 @@ import (
   "fmt"
   "io"
   "strings"
-  // "math"
 )
 
 var lines []string
 var stripes []string
+var stripeBase [][]string
 func main() {
   file, err := os.Open("input.txt")
   // file, err := os.Open("input_coba.txt")
@@ -60,14 +60,22 @@ func main() {
     current.stripe = stripe
   }
   delete(start.next, 0)
-
+  stripeBase = make([][]string, 0)
+  for _, stripe := range stripes {
+    _, m := recursiveNode(stripe, 0, start, "", []string{})
+    // fmt.Println(stripe, m, result)
+    stripeBase = append(stripeBase, m)
+    // stripeBase[stripe] = m
+  }
   count := int64(0)
   for i:=2;i<len(lines);i++{
     result, m := recursiveNode(lines[i], 0, start, "", []string{})
     // result := recursive(lines[i], 0)
-    fmt.Println(lines[i], result, m)
+    // fmt.Println(lines[i], result, m)
     if result {
-      count++
+      tempCount := recursivePossibleStripes(m, 0)
+      fmt.Println("possible for", lines[i], m, tempCount)
+      count+=int64(tempCount)
     }
   }
   fmt.Println(count)
@@ -79,10 +87,29 @@ var (
   RIGHT = 3
 )
 
-/*
- Note: The idea is to "
- */
-
+func recursivePossibleStripes(towel []string, index int) int {
+  if index >= len(towel) {
+    return 1
+  }
+  count := 0
+  for i := range stripeBase {
+    if index + len(stripeBase[i]) <= len(towel) && sliceEqual(towel[index:index+len(stripeBase[i])], stripeBase[i]) {
+      count += recursivePossibleStripes(towel, index+len(stripeBase[i]))
+    }
+  }
+  return count
+}
+func sliceEqual(a, b []string) bool {
+  if len(a) != len(b){
+    return false
+  }
+  for i:=0;i<len(a);i++{
+    if a[i] != b[i]{
+      return false
+    }
+  }
+  return true
+}
 type node struct{
   stripe string
   next map[byte]*node
@@ -98,8 +125,6 @@ func recursiveNode(towel string, index int, currentNode *node, currentStripe str
     // fmt.Println(towel, index, towel[index], string(towel[index]), string(currentNode.c), currentNode)
     // return currentNode.next[0] != nil && (currentNode.c == towel[index] || currentNode.c == 0)
     // return currentNode.next[0] != nil || currentNode.c == 0//&& (currentNode.c == towel[index] || currentNode.c == 0)
-    if(currentStripe == "wr") {
-    }
     if currentNode.next[0] == nil {
       return false, []string{}
     }

@@ -84,7 +84,7 @@ func main() {
     }
   }
   fmt.Println(fastestWithoutCheating)
-  recursive(y, x, 0, 0)
+  recursive(y, x, 0, MaxCheat)
   fmt.Println(savesAtleast100)
   // for _, v:=range data {
   //   fmt.Println(v)
@@ -116,10 +116,14 @@ func recursive(y, x int, current int, cheat int){
     return
   }
   if lines[y][x] == '#'{
-    if cheat > MaxCheat {
+    if cheat > 0{
+      cheat--
+    } else {
       return
     }
-    cheat++
+  }
+  if cheat==1 {
+    cheat = 0
   }
   if current < data[y][x] {
     data[y][x] = current
