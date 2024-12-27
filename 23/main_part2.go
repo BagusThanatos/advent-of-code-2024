@@ -8,6 +8,8 @@ import (
   "sort"
 )
 
+// NOte: Second part of day 23 is this: https://en.wikipedia.org/wiki/Clique_problem#
+
 var lines []string
 func main() {
   file, err := os.Open("input.txt")
@@ -62,7 +64,4 @@ func main() {
   for _, v:= range cliques {
     fmt.Print(string('a'+v/26), string('a'+v%26), ",")
   }
-}
-type node struct{
-  a,b,c int
 }
