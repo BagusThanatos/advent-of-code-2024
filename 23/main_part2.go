@@ -8,7 +8,7 @@ import (
   "sort"
 )
 
-// NOte: Second part of day 23 is this: https://en.wikipedia.org/wiki/Clique_problem#
+// NOte: Second part of day 23 is this: https://en.wikipedia.org/wiki/Clique_problem
 
 var lines []string
 func main() {
@@ -39,7 +39,7 @@ func main() {
     connection[secondNode][firstNode] = 1
     fmt.Println(lines[i], nodes, firstNode, secondNode, string(nodes[1][0]), nodes[1][0], nodes[1][0] - 'a', int(nodes[1][0] - 'a')*26)
   }
-  // for all node that starts with a 't'
+
   cliques := make([]int, 0)
   for i:=0;i<26*26;i++{
     tempCliques := []int{i}
